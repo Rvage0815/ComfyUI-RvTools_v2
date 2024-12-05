@@ -378,8 +378,10 @@ class RvImage_SaveImages:
                 #cstr(f"model_string: {model_string}").msg.print()
 
 
+            xPositive = positive
+
             if not sloras in (None, '', 'undefined', 'none') : 
-                xPositive = positive + str(sloras) #add the loras temp. to the prompt for PromptMetadataExtractor
+                xPositive += str(sloras) #add the loras temp. to the prompt for PromptMetadataExtractor
 
             metadata_extractor = PromptMetadataExtractor([xPositive, negative])
             embeddings = metadata_extractor.get_embeddings()
