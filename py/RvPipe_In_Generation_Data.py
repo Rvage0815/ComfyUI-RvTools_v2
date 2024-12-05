@@ -23,6 +23,7 @@ class RvPipe_In_Generation_Data:
                 "height": ("INT",{"forceInput": True}),
                 "seed_value": ("INT",{"forceInput": True}),
                 "loras": ("STRING",{"forceInput": True, "default": ""}),
+                "vae_name": ("STRING",{"forceInput": True, "default": ""}),
             }
         }
 
@@ -33,7 +34,7 @@ class RvPipe_In_Generation_Data:
 
     #steps, cfg, sampler_name, scheduler, positive, negative, modelname, width, height, seed_value, loras = pipe
 
-    def execute(self, pipe=None, steps=None, cfg=None, sampler_name=None, scheduler=None, positive=None, negative=None, modelname=None, width=None, height=None, seed_value=None, loras=None):
+    def execute(self, pipe=None, steps=None, cfg=None, sampler_name=None, scheduler=None, positive=None, negative=None, modelname=None, width=None, height=None, seed_value=None, loras=None, vae_name=None):
         steps_original = None
         cfg_original = None
         sampler_name_original = None
@@ -45,9 +46,10 @@ class RvPipe_In_Generation_Data:
         height_original = None
         seed_value_original = None
         loras_original = None
+        vae_name_original = None
 
         if pipe != None:
-            steps_original, cfg_original, sampler_name_original, scheduler_original, positive_original, negative_original, modelname_original, width_original, height_original, seed_value_original, loras_original = pipe
+            steps_original, cfg_original, sampler_name_original, scheduler_original, positive_original, negative_original, modelname_original, width_original, height_original, seed_value_original, loras_original, vae_name_original = pipe
 
         RBusAnyMod = []
 
@@ -62,6 +64,7 @@ class RvPipe_In_Generation_Data:
         RBusAnyMod.append(height if height is not None else height_original)
         RBusAnyMod.append(seed_value if seed_value is not None else seed_value_original)
         RBusAnyMod.append(loras if loras is not None else loras_original)
+        RBusAnyMod.append(vae_name if vae_name is not None else vae_name_original)
 
 
         return (RBusAnyMod,)

@@ -42,6 +42,8 @@ def get_sha256(file_path: str):
             cstr(f"RvTools: Error reading existing hash file: {e}").error.print()
 
     sha256_hash = hashlib.sha256()
+    cstr(f"Hashing File (SHA256): {file_path}").msg.print()
+
     with open(file_path, "rb") as f:
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
@@ -53,7 +55,6 @@ def get_sha256(file_path: str):
         cstr(f"RvTools: Error writing hash to {hash_file}: {e}").error.print()
 
     return sha256_hash.hexdigest()
-#---------------------------------------------------------------------------------------------------------------------#
 
 """
 Represent the given embedding name as key as detected by civitAI
@@ -179,12 +180,12 @@ class PromptMetadataExtractor:
        return get_sha256(file_path)[:10]
 
 
-def parse_checkpoint_name(ckpt_name):
+def return_filename(ckpt_name):
     return os.path.basename(ckpt_name)
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------#
-def parse_checkpoint_name_without_extension(ckpt_name):
-    return os.path.splitext(parse_checkpoint_name(ckpt_name))[0]
+def return_filename_without_extension(ckpt_name):
+    return os.path.splitext(return_filename(ckpt_name))[0]
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------#
 def handle_whitespace(string: str):
@@ -228,6 +229,7 @@ class RvImage_SaveImages:
             'lcm': 'LCM',
         }
         self.type = 'output'
+
 
     def get_civitai_sampler_name(self, sampler_name, scheduler):
         # based on: https://github.com/civitai/civitai/blob/main/src/server/common/constants.ts#L122
@@ -319,7 +321,7 @@ class RvImage_SaveImages:
 
         
         if pipe_opt != None:
-            steps, cfg, sampler_name, scheduler, positive, negative, modelname, width, height, seed_value, sloras = pipe_opt
+            steps, cfg, sampler_name, scheduler, positive, negative, modelname, width, height, seed_value, sloras, vae_name = pipe_opt
 
             ckpt_path = ''
             diffusion_path = ''
@@ -335,6 +337,7 @@ class RvImage_SaveImages:
             cstr(f"height: {height}").msg.print()
             cstr(f"seed_value: {seed_value}").msg.print()
             cstr(f"sloras: {sloras}").msg.print()
+            cstr(f"vae_name: {vae_nake}").msg.print()
             """
 
             if positive in (None, 'undefined', 'None'): positive = ""
@@ -347,32 +350,43 @@ class RvImage_SaveImages:
                 models = modelname.split(', ')
 
                 for model in models:
-                    if model:
+                    if model != "":
                         ckpt_path = folder_paths.get_full_path("checkpoints", model)
                         diffusion_path = folder_paths.get_full_path("diffusion_models", model)
+                        unet_path = folder_paths.get_full_path("unet", model)
         
                         if ckpt_path:
                             modelhash = get_sha256(ckpt_path)[:10]
                         elif diffusion_path:
                             modelhash = get_sha256(diffusion_path)[:10]
+                        elif unet_path:
+                            modelhash = get_sha256(unet_path)[:10]
                         else:
                             modelhash = ""
                     
-                        basemodelname = civitai_model_key_name(parse_checkpoint_name_without_extension(model))
-                        model_string[basemodelname] = modelhash
+                        if modelhash != "":
+                            basemodelname = civitai_model_key_name(return_filename_without_extension(model))
+                            model_string[basemodelname] = modelhash
 
-                        #model_string += f'"Model: {basemodelname}":"{modelhash}", '
-                        #model_string += f"Model hash: {modelhash}, Model: {basemodelname}, "
-                #cstr(f"model_string: {model_string}").msg.print()
+                cstr(f"model_string: {model_string}").msg.print()
+
+            if not vae_name in (None, 'undefined', 'None'):
+                vae_hash = get_sha256(vae_name)[:10]
+                vae_file = return_filename_without_extension(vae_name)
+                model_string[vae_file] = vae_hash
+
+                cstr(f"model_string: {model_string}").msg.print()
+
 
             if not sloras in (None, 'undefined', 'None') and sloras != "": 
-                positive += str(sloras) #add the loras to the prompt for PromptMetadataExtractor
+                xPositive = positive + str(sloras) #add the loras temp. to the prompt for PromptMetadataExtractor
 
-            metadata_extractor = PromptMetadataExtractor([positive, negative])
+            metadata_extractor = PromptMetadataExtractor([xPositive, negative])
             embeddings = metadata_extractor.get_embeddings()
             loras = metadata_extractor.get_loras()
             civitai_sampler_name = self.get_civitai_sampler_name(sampler_name.replace('_gpu', ''), scheduler)
             extension_hashes = json.dumps(model_string | embeddings | loras | { "model": modelhash })
+
 
             if not remove_prompts:
                 positive_a111_params = handle_whitespace(positive) 
@@ -382,7 +396,6 @@ class RvImage_SaveImages:
                 positive_a111_params = ''
                 negative_a111_params = f"\nNegative prompt: "
                 a111_params = f"{positive_a111_params}{negative_a111_params}\nSteps: {steps}, Sampler: {civitai_sampler_name}, CFG scale: {cfg}, Seed: {seed_value}, Size: {width}x{height}, Hashes: {extension_hashes}, Version: ComfyUI"
-
 
         delimiter = filename_delimiter
         number_padding = filename_number_padding

@@ -1,7 +1,4 @@
-<b><h2>Readme RvTools v2:</h2></b>
-To fix the issues in the Node Library of ComfyUI i had to change all node names which leads to this version but that also allows me to updated some of the names for a cleaner look and do some other clean ups.<br><br>
-![Screenshot 2024-11-28 100306](https://github.com/user-attachments/assets/ab68ad18-a057-4834-ba28-8fcb377578b1)
-
+<b><h2>Readme RvTools:</h2></b>
 
 i created this set of nodes because some nodes did not exist or do not exist in the other sets, starting with the passers and switches. 
 Also, the comfyui manager quite often had problems displaying the correct nodes I used in my workflows, which caused problems for the users. 
@@ -36,4 +33,3 @@ is always enabled and a node that is always enabled and connected to the first s
 
 
 <b><h2>...to be continued</h2></b>
-
