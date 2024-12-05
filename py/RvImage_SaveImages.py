@@ -337,16 +337,16 @@ class RvImage_SaveImages:
             cstr(f"height: {height}").msg.print()
             cstr(f"seed_value: {seed_value}").msg.print()
             cstr(f"sloras: {sloras}").msg.print()
-            cstr(f"vae_name: {vae_nake}").msg.print()
+            cstr(f"vae_name: {vae_name}").msg.print()
             """
 
-            if positive in (None, 'undefined', 'None'): positive = ""
-            if negative in (None, 'undefined', 'None'): negative = ""
+            if positive in (None, '', 'undefined', 'none'): positive = ""
+            if negative in (None, '', 'undefined', 'none'): negative = ""
 
             model_string = {}
             basemodelname = ''
             
-            if not modelname in (None, 'undefined', 'None'):
+            if not modelname in (None, '', 'undefined', 'none') : 
                 models = modelname.split(', ')
 
                 for model in models:
@@ -368,17 +368,17 @@ class RvImage_SaveImages:
                             basemodelname = civitai_model_key_name(return_filename_without_extension(model))
                             model_string[basemodelname] = modelhash
 
-                cstr(f"model_string: {model_string}").msg.print()
+                #cstr(f"model_string: {model_string}").msg.print()
 
-            if not vae_name in (None, 'undefined', 'None'):
+            if not vae_name in (None, '', 'undefined', 'none') : 
                 vae_hash = get_sha256(vae_name)[:10]
                 vae_file = return_filename_without_extension(vae_name)
                 model_string[vae_file] = vae_hash
 
-                cstr(f"model_string: {model_string}").msg.print()
+                #cstr(f"model_string: {model_string}").msg.print()
 
 
-            if not sloras in (None, 'undefined', 'None') and sloras != "": 
+            if not sloras in (None, '', 'undefined', 'none') : 
                 xPositive = positive + str(sloras) #add the loras temp. to the prompt for PromptMetadataExtractor
 
             metadata_extractor = PromptMetadataExtractor([xPositive, negative])
