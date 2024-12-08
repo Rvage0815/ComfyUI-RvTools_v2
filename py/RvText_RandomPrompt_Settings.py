@@ -12,32 +12,32 @@ prompt_path = os.path.join(prompt_path, "wildcards")
 prompt_path = os.path.join(prompt_path, "RvTools_v2")
 prompt_path = os.path.join(prompt_path, "settings")
 
-csv_file_name_7 =  '1_0Shotstyle.csv'
-csv_file_name_8 =  '1_1Angle_of_View.csv'
-csv_file_name_9 =  '1_2Locations.csv'
-csv_file_name_10 = '1_3Artists.csv'
-csv_file_name_11 = '1_4Artists_Special.csv'
-csv_file_name_12 = '1_5Cameras.csv'
-csv_file_name_13 = '1_6Lighting.csv'
-csv_file_name_14 = '2_0AdelAi_Artists.csv'
-csv_file_name_15 = '2_1AdelAi_Styles.csv'
-csv_file_name_16 = '2_2AdelAi_FX.csv'
-csv_file_name_17 = '2_3AdelAi_Lighting.csv'
-csv_file_name_18 = '2_4AdelAi_Cameras.csv'
-csv_file_name_19 = '2_5AdelAi_Films.csv'
+csv_file_name_7 =  '1_0Shotstyle.txt'
+csv_file_name_8 =  '1_1Angle_of_View.txt'
+csv_file_name_9 =  '1_2Locations.txt'
+csv_file_name_10 = '1_3Artists.txt'
+csv_file_name_11 = '1_4Artists_Special.txt'
+csv_file_name_12 = '1_5Cameras.txt'
+csv_file_name_13 = '1_6Lighting.txt'
+csv_file_name_14 = '2_0AdelAi_Artists.txt'
+csv_file_name_15 = '2_1AdelAi_Styles.txt'
+csv_file_name_16 = '2_2AdelAi_FX.txt'
+csv_file_name_17 = '2_3AdelAi_Lighting.txt'
+csv_file_name_18 = '2_4AdelAi_Cameras.txt'
+csv_file_name_19 = '2_5AdelAi_Films.txt'
 
 #based on the code from jice
 def getfilename(folder):
     name = []
     for filename in os.listdir(folder):
-        if filename.endswith(".csv"):
+        if filename.endswith(".txt"):
            name.append(filename[3:-4])
     return name
 
 def select_random_line_from_csv_file(file, folder):
     chosen_lines = []
     for filename in os.listdir(folder):
-        if filename.endswith(".csv") and filename[3:-4] == file:
+        if filename.endswith(".txt") and filename[3:-4] == file:
             file_path = os.path.join(folder, filename)
             with open(file_path, 'r', encoding="utf-8") as file:
                 lines = file.readlines()
@@ -84,7 +84,7 @@ class RvText_RandomPrompt:
 
 
         for filename in os.listdir(prompt_path):
-              if filename.endswith(".csv"):
+              if filename.endswith(".txt"):
                  file_path = os.path.join(prompt_path, filename)
                  lines = []
                  with open(file_path, 'r', encoding="utf-8") as file:

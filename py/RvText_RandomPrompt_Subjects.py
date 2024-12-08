@@ -12,26 +12,26 @@ prompt_path = os.path.join(prompt_path, "wildcards")
 prompt_path = os.path.join(prompt_path, "RvTools_v2")
 prompt_path = os.path.join(prompt_path, "subjects")
 
-csv_file_name_1 =  '0_1Woman.csv'
-csv_file_name_2 =  '0_2Man.csv'
-csv_file_name_3 =  '0_3Fictional_Character.csv'
-csv_file_name_4 =  '0_4Humanoids.csv'
-csv_file_name_5 =  '0_5Animals.csv'
-csv_file_name_6 =  '0_6Vehicles.csv'
+csv_file_name_1 =  '0_1Woman.txt'
+csv_file_name_2 =  '0_2Man.txt'
+csv_file_name_3 =  '0_3Fictional_Character.txt'
+csv_file_name_4 =  '0_4Humanoids.txt'
+csv_file_name_5 =  '0_5Animals.txt'
+csv_file_name_6 =  '0_6Vehicles.txt'
 
 
 #based on the code from jice
 def getfilename(folder):
     name = []
     for filename in os.listdir(folder):
-        if filename.endswith(".csv"):
+        if filename.endswith(".txt"):
            name.append(filename[3:-4])
     return name
 
 def select_random_line_from_csv_file(file, folder):
     chosen_lines = []
     for filename in os.listdir(folder):
-        if filename.endswith(".csv") and filename[3:-4] == file:
+        if filename.endswith(".txt") and filename[3:-4] == file:
             file_path = os.path.join(folder, filename)
             with open(file_path, 'r', encoding="utf-8") as file:
                 lines = file.readlines()
@@ -71,7 +71,7 @@ class RvText_RandomPrompt:
 
 
         for filename in os.listdir(prompt_path):
-              if filename.endswith(".csv"):
+              if filename.endswith(".txt"):
                  file_path = os.path.join(prompt_path, filename)
                  lines = []
                  with open(file_path, 'r', encoding="utf-8") as file:
