@@ -5,11 +5,6 @@ import folder_paths
 
 from ..core import CATEGORY
 
-MAX_RESOLUTION = 32768
-CLIP_MODELS = folder_paths.get_filename_list("clip") + ["None"]
-DIFF_MODELS = folder_paths.get_filename_list("diffusion_models") + ["None"]
-CKPT_MODELS = folder_paths.get_filename_list("checkpoints") + ["None"]
-
 class RvCheckpointLoader_v3_Pipe:
 
     def __init__(self):
@@ -19,12 +14,12 @@ class RvCheckpointLoader_v3_Pipe:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "ckpt_name": (CKPT_MODELS, {"default": "None"},),
-                "unet_name": (DIFF_MODELS, {"default": "None"},), 
+                "ckpt_name": (folder_paths.get_filename_list("checkpoints") + ["None"], {"default": "None"},),
+                "unet_name": (folder_paths.get_filename_list("diffusion_models") + ["None"], {"default": "None"},), 
                 "weight_dtype": (["default", "fp8_e4m3fn", "fp8_e4m3fn_fast", "fp8_e5m2"],),
-                "clip_name1": (CLIP_MODELS, {"default": "None"},),
-                "clip_name2": (CLIP_MODELS, {"default": "None"},),
-                "clip_name3": (CLIP_MODELS, {"default": "None"},),
+                "clip_name1": (folder_paths.get_filename_list("clip") + ["None"], {"default": "None"},),
+                "clip_name2": (folder_paths.get_filename_list("clip") + ["None"], {"default": "None"},),
+                "clip_name3": (folder_paths.get_filename_list("clip") + ["None"], {"default": "None"},),
                 "clip_type_": (["sdxl", "sd3", "flux"], {"default": "flux"},),
                 "vae": (["Baked VAE"] + folder_paths.get_filename_list("vae"),),
                 "baked_clip": ("BOOLEAN", {"default": True},),

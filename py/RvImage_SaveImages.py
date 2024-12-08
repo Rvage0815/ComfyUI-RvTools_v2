@@ -6,7 +6,6 @@ import torch
 import json
 import numpy as np
 import folder_paths
-import folder_paths as comfy_paths
 import hashlib
 
 from PIL import Image
@@ -17,12 +16,6 @@ from ..core import CATEGORY, cstr
 
 UPSCALE_MODELS = folder_paths.get_filename_list("upscale_models") + ["None"]
 MAX_RESOLUTION = 32768
-
-#---------------------------------------------------------------------------------------------------------------------
-#! MESSAGE TEMPLATES
-cstr.color.add_code("msg", f"{cstr.color.LIGHTGREEN}RvTools: {cstr.color.END}")
-cstr.color.add_code("warning", f"{cstr.color.LIGHTGREEN}RvTools {cstr.color.LIGHTYELLOW}Warning: {cstr.color.END}")
-cstr.color.add_code("error", f"{cstr.color.RED}RvTools {cstr.color.END}Error: {cstr.color.END}")
 
 ALLOWED_EXT = ('.jpeg', '.jpg', '.png', '.tiff', '.gif', '.bmp', '.webp')
 
@@ -74,7 +67,6 @@ def civitai_lora_key_name(lora: str):
 def civitai_model_key_name(model: str):
     return f'Model:{model}'
 #---------------------------------------------------------------------------------------------------------------------#
-
 
 """
 Based on a embedding name, eg: EasyNegative, finds the path as known in comfy, including extension
@@ -207,7 +199,7 @@ def save_json(image_info, filename):
 #based on Was-node-suite & image saver
 class RvImage_SaveImages:
     def __init__(self):
-        self.output_dir = comfy_paths.output_directory
+        self.output_dir = folder_paths.output_directory
         self.civitai_sampler_map = {
             'euler_ancestral': 'Euler a',
             'euler': 'Euler',
@@ -416,7 +408,7 @@ class RvImage_SaveImages:
         # Check output destination
         if output_path.strip() != '':
             if not os.path.isabs(output_path):
-                output_path = os.path.join(comfy_paths.output_directory, output_path)
+                output_path = os.path.join(folder_paths.output_directory, output_path)
             if not os.path.exists(output_path.strip()):
                 cstr(f'The path `{output_path.strip()}` specified doesn\'t exist! Creating directory.').warning.print()
                 os.makedirs(output_path, exist_ok=True)
