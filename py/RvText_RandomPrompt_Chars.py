@@ -4,7 +4,7 @@ import os
 from ..core import CATEGORY
 
 script_directory = os.path.dirname(__file__)
-folder_path = os.path.join(script_directory, "..", "csv2" )
+folder_path = os.path.join(script_directory, "..", "csv1" )
 
 def getfilename(folder):
     name = []
@@ -80,8 +80,8 @@ class RvText_RandomPrompt:
          
         return (final_values,)
 
-NODE_NAME = 'Random Prompt by jice: Settings [RvTools]'
-NODE_DESC = 'Random Prompt by jice: Settings'
+NODE_NAME = 'Random Prompt by jice: Subjects [RvTools]'
+NODE_DESC = 'Random Prompt by jice: Subjects'
 
 NODE_CLASS_MAPPINGS = {
    NODE_NAME: RvText_RandomPrompt
