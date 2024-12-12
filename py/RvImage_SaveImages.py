@@ -363,7 +363,9 @@ class RvImage_SaveImages:
                 #cstr(f"model_string: {model_string}").msg.print()
 
             if not vae_name in (None, '', 'undefined', 'none') : 
-                vae_hash = get_sha256(vae_name)[:10]
+                vae_full_path = folder_paths.get_full_path("vae", vae_name)
+                #cstr(f"vae_string: {vae_full_path}").msg.print()
+                vae_hash = get_sha256(vae_full_path)[:10]
                 vae_file = return_filename_without_extension(vae_name)
                 model_string[vae_file] = vae_hash
 

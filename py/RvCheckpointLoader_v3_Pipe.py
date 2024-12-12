@@ -44,7 +44,7 @@ class RvCheckpointLoader_v3_Pipe:
         baked_vae = False
         clip = None
 
-        if vae == "Baked VAE": baked_vae = True 
+        baked_vae = (vae == "Baked VAE")
 
         if ckpt_name in (None, 'undefined', 'None') and unet_name in (None, 'undefined', 'None'):   #no checkpoint selected
             raise ValueError("Missing Input: No Checkpoint selected")
@@ -137,7 +137,7 @@ class RvCheckpointLoader_v3_Pipe:
         if vae == "Baked VAE":
            rlist.append('')                #empty string no file selected
         else:
-            rlist.append(str(vae_path))    #vae_name
+            rlist.append(str(vae))         #vae_name (no path)
 
         return (rlist,)
 
