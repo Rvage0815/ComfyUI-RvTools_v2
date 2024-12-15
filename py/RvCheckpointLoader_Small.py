@@ -33,20 +33,20 @@ class RvCheckpointLoader_Small:
 
         output_vae = (vae_name == "Baked VAE")
 
-        ckpt = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=output_vae, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"),)
+        loaded_ckpt = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=output_vae, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"),)
 
         vae_path = ""
 
         if vae_name == "Baked VAE":
-            vae = ckpt[:3][2]
+            loaded_vae = loaded_ckpt[:3][2]
         else:
             vae_path = folder_paths.get_full_path("vae", vae_name)
-            vae = comfy.sd.VAE(sd=comfy.utils.load_torch_file(vae_path))
+            loaded_vae = comfy.sd.VAE(sd=comfy.utils.load_torch_file(vae_path))
 
-        clip = ckpt[:3][1].clone()
-        clip.clip_layer(stop_at_clip_layer)
+        loaded_clip = loaded_ckpt[:3][1].clone()
+        loaded_clip.clip_layer(stop_at_clip_layer)
 
-        return (ckpt[:3][0], vae, clip, ckpt_name,)
+        return (loaded_ckpt[:3][0], loaded_vae, loaded_clip, ckpt_name,)
 
 NODE_NAME = 'Checkpoint Loader Small [RvTools]'
 NODE_DESC = 'Checkpoint Loader Small'

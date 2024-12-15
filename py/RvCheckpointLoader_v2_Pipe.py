@@ -40,8 +40,8 @@ class RvCheckpointLoader_v2_Pipe:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "Checkpoint": (folder_paths.get_filename_list("checkpoints"),),
-                "Vae": (["Baked VAE"] + folder_paths.get_filename_list("vae"),),
+                "ckpt_name": (folder_paths.get_filename_list("checkpoints"),),
+                "vae_name": (["Baked VAE"] + folder_paths.get_filename_list("vae"),),
                 "Baked_Clip": ("BOOLEAN", {"default": True},),
                 "Use_Clip_Layer": ("BOOLEAN", {"default": True},),
                 "stop_at_clip_layer": ("INT", {"default": -1, "min": -24, "max": -1, "step": 1},),
@@ -57,25 +57,25 @@ class RvCheckpointLoader_v2_Pipe:
     RETURN_TYPES = ("pipe",)
     FUNCTION = "execute"
 
-    def execute(self, Checkpoint, vae, Baked_Clip, Use_Clip_Layer, stop_at_clip_layer, batch_size, resolution, width, height):
-        ckpt_path = folder_paths.get_full_path("checkpoints", Checkpoint)
-        output_vae = (vae == "Baked VAE")
+    def execute(self, ckpt_name, vae_name, Baked_Clip, Use_Clip_Layer, stop_at_clip_layer, batch_size, resolution, width, height):
+        ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
+        output_vae = (vae_name == "Baked VAE")
 
-        ckpt = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=output_vae, output_clip=Baked_Clip, embedding_directory=folder_paths.get_folder_paths("embeddings"),)
+        loaded_ckpt = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=output_vae, output_clip=Baked_Clip, embedding_directory=folder_paths.get_folder_paths("embeddings"),)
 
         vae_path = ""
 
-        if vae == "Baked VAE":
-            loaded_vae = ckpt[:3][2]
+        if vae_name == "Baked VAE":
+            loaded_vae = loaded_ckpt[:3][2]
         else:
-            vae_path = folder_paths.get_full_path("vae", vae)
+            vae_path = folder_paths.get_full_path("vae", vae_name)
             loaded_vae = comfy.sd.VAE(sd=comfy.utils.load_torch_file(vae_path))
 
         if Baked_Clip:
-            clip = ckpt[:3][1].clone()
-            if Use_Clip_Layer: clip.clip_layer(stop_at_clip_layer)
+            loaded_clip = loaded_ckpt[:3][1].clone()
+            if Use_Clip_Layer: loaded_clip.clip_layer(stop_at_clip_layer)
         else:
-            clip = None
+            loaded_clip = None
 
         #if(resolution == "Custom"):
             #width, height = 512, 512
@@ -130,15 +130,15 @@ class RvCheckpointLoader_v2_Pipe:
         #model, clip, vae, latent, width, height, batch_size, modelname, vae_name = pipe
 
         rlist = []
-        rlist.append(ckpt[:3][0])
-        rlist.append(clip)
+        rlist.append(loaded_ckpt[:3][0])
+        rlist.append(loaded_clip)
         rlist.append(loaded_vae)
         rlist.append({"samples": latent}) #latents
         rlist.append(int(width))
         rlist.append(int(height))
         rlist.append(int(batch_size))
-        rlist.append(str(Checkpoint))   #str(ckpt_path)) #model_name
-        rlist.append(str(vae))          #vae_name (no path)
+        rlist.append(str(ckpt_name))      #model_name
+        rlist.append(str(vae_name))       #vae_name (no path)
 
         return (rlist,)
 
