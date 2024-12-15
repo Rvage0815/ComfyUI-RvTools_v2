@@ -16,38 +16,37 @@ class RvCheckpointLoader_Small:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "Checkpoint": (folder_paths.get_filename_list("checkpoints"),),
-                "Vae": (["Baked VAE"] + folder_paths.get_filename_list("vae"),),
+                "ckpt_name": (folder_paths.get_filename_list("checkpoints"),),
+                "vae_name": (["Baked VAE"] + folder_paths.get_filename_list("vae"),),
                 "stop_at_clip_layer": ("INT", {"default": -1, "min": -24, "max": -1, "step": 1},),
             },
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.CHECKPOINT.value
 
-    RETURN_TYPES = ("MODEL", "VAE", "CLIP",)
-    RETURN_NAMES = ("model", "vae", "clip",)
+    RETURN_TYPES = ("MODEL", "VAE", "CLIP", "STRING",)
+    RETURN_NAMES = ("model", "vae", "clip", "model_name")
     FUNCTION = "execute"
 
-    def execute(self, Checkpoint, Vae, stop_at_clip_layer):
-        ckpt_path = folder_paths.get_full_path("checkpoints", Checkpoint)
-        output_vae = False
+    def execute(self, ckpt_name, vae_name, stop_at_clip_layer):
+        ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
 
-        if Vae == "Baked VAE": output_vae = True
+        output_vae = (vae_name == "Baked VAE")
 
         ckpt = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=output_vae, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"),)
 
         vae_path = ""
 
-        if Vae == "Baked VAE":
+        if vae_name == "Baked VAE":
             vae = ckpt[:3][2]
         else:
-            vae_path = folder_paths.get_full_path("vae", Vae)
+            vae_path = folder_paths.get_full_path("vae", vae_name)
             vae = comfy.sd.VAE(sd=comfy.utils.load_torch_file(vae_path))
 
         clip = ckpt[:3][1].clone()
         clip.clip_layer(stop_at_clip_layer)
 
-        return (ckpt[:3][0], vae, clip,)
+        return (ckpt[:3][0], vae, clip, ckpt_name,)
 
 NODE_NAME = 'Checkpoint Loader Small [RvTools]'
 NODE_DESC = 'Checkpoint Loader Small'
