@@ -346,6 +346,7 @@ class RvImage_SaveImages:
                         ckpt_path = folder_paths.get_full_path("checkpoints", model)
                         diffusion_path = folder_paths.get_full_path("diffusion_models", model)
                         unet_path = folder_paths.get_full_path("unet", model)
+                        upscaler_path = folder_paths.get_full_path("upscale_models", model)
         
                         if ckpt_path:
                             modelhash = get_sha256(ckpt_path)[:10]
@@ -353,6 +354,8 @@ class RvImage_SaveImages:
                             modelhash = get_sha256(diffusion_path)[:10]
                         elif unet_path:
                             modelhash = get_sha256(unet_path)[:10]
+                        elif upscaler_path:
+                            modelhash = get_sha256(upscaler_path)[:10]
                         else:
                             modelhash = ""
                     
